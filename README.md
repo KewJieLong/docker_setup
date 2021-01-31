@@ -2,7 +2,7 @@
 
 The idea of using Docker is we can first [build](#build-docker-image) a docker images where act as virtual machine, and
 this Virtual machine is configured and installed all the dependency / library for our code to run. Once we make the
-docker work in one instance, we can easily [export](#export-docker-image) the workable docker image to another instance.
+docker work in one computer instance, we can easily [export](#export-docker-image) the workable docker image to another instance.
 While in another instance, we just need to [import](#import-docker-image) and [create](#start-container-with-image) a
 docker container with the images. Lastly, we just need to [ssh](#ssh-into-docker) into the docker container, it will
 just work as your first instance.
@@ -56,23 +56,45 @@ RUN pip3 install -r requirements.txt
 
 
 ## Export docker image
-Once the docker 
+Once the docker is built, we can export by doing:
 
 ```
-docker save -o tar_filename.tar image_name
+docker save -o deeplearning_image_tarfile.tar deeplearning
 ```
+This command will save the **deeplearning** image as **deeplearning_image_tarfile.tar**.  
+
 
 ## Import docker image
+Once the docker image is exported. we can import the docker image by doing:
+```
+docker load < deeplearning_image_tarfile.tar
+```
+This command will load the **deeplearning_image_tarfile.tar** as a docker image named **deeplearning**.
 
-```
-docker load < tar_filename.tar
-```
 
 ## start container with image
 
+Start the docker container with **deeplearning** docker images. 
 ```
 docker run -it -v /kew:/kew --shm-size 50G --gpus all -d --name deeplearning deeplearning:latest
 ```
+This command will start a docker container with **deeplearning** image under the container name of **deeplearning**. 
+
+`-i`: Keep STDIN open even if not attached
+
+`-t`: Allocate a pseudo-tty
+
+`-v`: mount point for the docker container and the computer storage. E.g: in ths script above, i mount `/kew` in my 
+local machine to `/kew` in the docker container. So that i can access `/kew` folder in my docker container.
+
+`--gpus all`: Which gpu is accessible to the docker container 
+
+`-d`: Start the docker container in detach mode
+
+`--shm-size 50G`: to avoid pytorch shared memory issue
+
+`--name`: name for the docker container
+
 
 ## ssh into docker
 ```
