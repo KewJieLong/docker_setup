@@ -1,5 +1,5 @@
-code_path="/code"
-experiment_path="/media/seven/HD_1/Kew"
+code_path="~"
+experiment_path="~"
 
 for i in 1 2 3; do
 	tmux new-session -d -s kew_${i} -c ${code_path}
