@@ -114,8 +114,6 @@ docker exec -it deeplearning /bin/bash
 
 #### Do `docker container rm CONTAINER_ID` to remove the container. CONTAINER_ID is obtained from `docker ps -a`
 
-## Detach the docker
-
 ## Docker proxy issue
 
 We are not sure the reason, but sometime we might suffer internet issue where the docker container do not have internet
