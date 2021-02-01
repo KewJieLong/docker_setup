@@ -27,19 +27,31 @@ your own Dockerfile and build your own Docker.
 In this section, we briefly go through how to prepare a Dockerfile
 
 ```
-FROM tensorflow/tensorflow:1.15.2-gpu-py3 
-RUN apt-get update && apt-get install -y apt-transport-https
-RUN apt-get install -y libsm6 libxext6 libxrender-dev
-RUN apt update && apt install -y libsm6 libxext6
-RUN apt install nano
-RUN apt install -y git
-RUN apt-get install -y tmux
-RUN apt-get install -y htop
+FROM tensorflow/tensorflow:1.15.2-gpu-py3
+
+ENV username='docker'
+ENV password='docker'
 
 COPY start_tmux_script.sh .
 COPY requirements.txt .
 
+RUN pip install --upgrade pip
 RUN pip3 install -r requirements.txt
+#
+RUN apt-get update
+RUN apt-get install -y apt-transport-https
+RUN apt-get install -y libsm6 libxext6 libxrender-dev
+RUN apt update && apt install -y libsm6 libxext6
+RUN apt install -y sudo
+RUN apt install -y nano
+RUN apt install -y git
+RUN apt-get install -y tmux
+RUN apt-get install -y htop
+
+RUN useradd -m docker && echo "${username}:${password}" | chpasswd && adduser docker sudo
+USER docker
+
+RUN echo $password | chsh -s /bin/bash
 ```
 
 1) First, we need to define which docker images to use. There are a lot of different varieties to use in
@@ -48,12 +60,14 @@ RUN pip3 install -r requirements.txt
    OS for your virtual machine. In the sample scripts, we use `FROM tensorflow/tensorflow:1.15.2-gpu-py3`, which is a
    family member of tensorflow version 1.15 GPU version.
 2) Next, we install some library such as `nano` for editing, `tmux` for terminal control, `htop` for observing CPU
-   usage.
+   usage and other library for cv2 to work probably. 
 3) You may also copy some scripts into your docker image, in the sample, we copy `start_tmux_script.sh`
    and `requiements.txt`, which we use `start_tmux_script.sh` to start our split screen and multi windows,
    while `requirements.txt` is used to installed python library.
 4) Lastly, we install the python library by `RUN pip3 install -r requirements.txt`
 
+Note that we avoid to use root user in docker as if we use root user in docker, all the file created in the docker container 
+will be belong to root user, which we will need to have root user access to delete/modify the file.  
 
 ## Export docker image
 Once the docker is built, we can export by doing:
