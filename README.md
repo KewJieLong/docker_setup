@@ -59,11 +59,14 @@ RUN echo $password | chsh -s /bin/bash
    `FROM ubuntu:18.04`, which then the docker will use ubuntu images to create the image for you. You can treat it as a
    OS for your virtual machine. In the sample scripts, we use `FROM tensorflow/tensorflow:1.15.2-gpu-py3`, which is a
    family member of tensorflow version 1.15 GPU version.
+   
 2) Next, we install some library such as `nano` for editing, `tmux` for terminal control, `htop` for observing CPU
-   usage and other library for cv2 to work probably. 
+   usage and other library for cv2 to work probably.
+   
 3) You may also copy some scripts into your docker image, in the sample, we copy `start_tmux_script.sh`
    and `requiements.txt`, which we use `start_tmux_script.sh` to start our split screen and multi windows,
    while `requirements.txt` is used to installed python library.
+   
 4) Lastly, we install the python library by `RUN pip3 install -r requirements.txt`
 
 Note that we avoid to use root user in docker as if we use root user in docker, all the file created in the docker container 
